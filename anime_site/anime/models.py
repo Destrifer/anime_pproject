@@ -38,7 +38,7 @@ class Anime(models.Model):
 
 class Rating(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-	series = models.ForeignKey(Anime, on_delete=models.CASCADE)
+	series = models.ForeignKey(Anime, on_delete=models.CASCADE, related_name='series_rating')
 	score = models.IntegerField()
 	session = models.CharField(max_length=40, null=True, blank=True)
 
@@ -56,15 +56,15 @@ class Rating(models.Model):
 		verbose_name = "Рейтинг"
 
 class Episode(models.Model):
-	series = models.ForeignKey(AnimeSeries, related_name='episodes', on_delete=models.CASCADE)
+	series = models.ForeignKey(Anime, related_name='episodes', on_delete=models.CASCADE)
 	title = models.CharField("Название", max_length=100)
 	video = models.FileField("Загрузить")
 
 	def save(self, *args, **kwargs):
-        if not self.id:
-            max_number = Episode.objects.filter(series=self.series).count()
-            self.number = max_number + 1
-        super().save(*args, **kwargs)
+		if not self.id:
+				max_number = Episode.objects.filter(series=self.series).count()
+				self.number = max_number + 1
+		super().save(*args, **kwargs)
 
 	class Meta:
 		verbose_name = "Эпизоды"
@@ -78,7 +78,7 @@ class Comments(models.Model):
 	post_date = models.DateTimeField(default=timezone.now)
 
 	def __str__(self):
-        return f'Comment by {self.user.username} on {self.episode.title}'
+		return f'Comment by {self.user.username} on {self.episode.title}'
 
 	class Meta:
 		verbose_name = "Комментарии"
