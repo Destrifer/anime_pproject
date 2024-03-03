@@ -1,0 +1,14 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+  <h1>Список аниме</h1>
+
+  {% for anime in animes %}
+    <div>
+      <h2><a href="{% url 'anime_detail' anime.pk %}">{{ anime.name }}</a></h2>
+      <p>{{ anime.description|truncatewords:50 }}</p> <!-- Отобразим только первые 50 слов описания -->
+    </div>
+  {% empty %}
+    <p>В настоящее время нет доступных аниме.</p>
+  {% endfor %}
+{% endblock %}
